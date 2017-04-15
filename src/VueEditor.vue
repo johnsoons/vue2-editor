@@ -35,13 +35,16 @@ export default {
     placeholder: String,
     disabled: Boolean,
     editorToolbar: Array,
+    plugins: Array
   },
 
   data() {
     return {
       quill: null,
-      editor: null,
-      toolbar: this.editorToolbar ? this.editorToolbar : defaultToolbar
+      editor: null,      
+      modules: {
+        toolbar: this.editorToolbar ? this.editorToolbar : defaultToolbar
+      }      
     }
   },
 
@@ -63,16 +66,26 @@ export default {
 
   methods: {
     initializeVue2Editor() {
+      this.prepareModules()
       this.setQuillElement()
       this.setEditorElement()
       this.checkForInitialContent()
     },
 
+    prepareModules() {      
+      if(this.plugins !== undefined)
+      {          
+          let self = this
+          this.plugins.forEach(function(element, index){ 
+            Quill.register('modules/' + element.alias, element.module)
+            self.modules[element.alias] = element.config
+          })
+      }
+    },
+
     setQuillElement() {
       this.quill = new Quill(this.$refs.quillContainer, {
-        modules: {
-          toolbar: this.toolbar
-        },
+        modules: this.modules,
         placeholder: this.placeholder ? this.placeholder : '',
         theme: 'snow',
         readOnly: this.disabled ? this.disabled : false,
