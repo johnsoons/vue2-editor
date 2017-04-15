@@ -35,7 +35,7 @@ export default {
     placeholder: String,
     disabled: Boolean,
     editorToolbar: Array,
-    plugins: Array
+    editorModules: Array
   },
 
   data() {
@@ -73,10 +73,10 @@ export default {
     },
 
     prepareModules() {      
-      if(this.plugins !== undefined)
+      if(this.editorModules !== undefined)
       {          
           let self = this
-          this.plugins.forEach(function(element, index){ 
+          this.editorModules.forEach(element => { 
             Quill.register('modules/' + element.alias, element.module)
             self.modules[element.alias] = element.config
           })
